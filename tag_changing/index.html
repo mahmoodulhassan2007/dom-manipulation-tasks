@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <p id="firstpara">This is my paragraph in html</p>
+<!-- <textarea name="" id=""></textarea> -->
+    <script>
+        const pElement = document.getElementById('firstpara');
+        if(pElement){
+            const h1Element = document.createElement("h1");
+            h1Element.textContent = pElement.textContent;
+            pElement.parentNode.replaceChild(h1Element,pElement);
+        }else{
+            console.error("Paragraph element not found.");
+        }
+    </script>
+
+
+</body>
+</html>
