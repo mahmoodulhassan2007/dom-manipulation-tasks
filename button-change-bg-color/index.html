@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>click on button change color</title>
+    <style>
+        #Color_button{
+           width: 200px;
+           height: 50px;
+           background-color: steelblue;
+           color: white;
+           padding: 10px 10px;
+           border: none;
+           cursor: pointer;
+           font: size 16px;
+           font-width: 10px;
+           border-radius: 5px;
+           transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <button id="Color_button">Change Color</button>
+
+
+    
+      <script>
+    const button = document.getElementById('Colorbutton');
+    let isBlue = true;
+    button.addEventListener('click', function () {
+      if (isBlue) {
+        button.style.backgroundColor = 'green';
+      } else {
+        button.style.backgroundColor = 'steelblue'; 
+      }
+      isBlue = !isBlue; 
+    });
+  </script>
+</body>
+</html>

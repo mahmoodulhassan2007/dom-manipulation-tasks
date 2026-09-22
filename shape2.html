@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Procedural Skeleton Animation</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #797999;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let w = (canvas.width = window.innerWidth);
+let h = (canvas.height = window.innerHeight);
+
+window.addEventListener("resize", () => {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+});
+
+const mouse = { x: w / 2, y: h / 2 };
+window.addEventListener("mousemove", (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+class Segment {
+  constructor(x, y, len) {
+    this.x = x;
+    this.y = y;
+    this.len = len;
+    this.angle = 0;
+  }
+
+  follow(tx, ty) {
+    const dx = tx - this.x;
+    const dy = ty - this.y;
+    this.angle = Math.atan2(dy, dx);
+    this.x = tx - Math.cos(this.angle) * this.len;
+    this.y = ty - Math.sin(this.angle) * this.len;
+  }
+}
+
+const numSegments = 32;
+const segLen = 12;
+const spine = Array.from({ length: numSegments }, () => new Segment(w / 2, h / 2, segLen));
+
+const legIndices = [5, 13, 21];
+const feet = legIndices.map(() => ({
+  left: { x: w / 2, y: h / 2 },
+  right: { x: w / 2, y: h / 2 }
+}));
+
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+
+  spine[0].follow(mouse.x, mouse.y);
+  for (let i = 1; i < spine.length; i++) {
+    spine[i].follow(spine[i - 1].x, spine[i - 1].y);
+  }
+
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 1.5;
+
+  spine.forEach((seg, i) => {
+    const radius = Math.sin((i / spine.length) * Math.PI) * 26 + 3;
+    const pAngle = seg.angle + Math.PI / 2;
+
+    const x1 = seg.x + Math.cos(pAngle) * radius;
+    const y1 = seg.y + Math.sin(pAngle) * radius;
+    const x2 = seg.x - Math.cos(pAngle) * radius;
+    const y2 = seg.y - Math.sin(pAngle) * radius;
+
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+  });
+
+  legIndices.forEach((segIdx, pairIdx) => {
+    const seg = spine[segIdx];
+    const pAngle = seg.angle + Math.PI / 2;
+    const reach = 42;
+
+    const targetLeft = {
+      x: seg.x + Math.cos(pAngle) * reach,
+      y: seg.y + Math.sin(pAngle) * reach
+    };
+    const targetRight = {
+      x: seg.x - Math.cos(pAngle) * reach,
+      y: seg.y - Math.sin(pAngle) * reach
+    };
+
+    const pair = feet[pairIdx];
+
+    if (Math.hypot(pair.left.x - targetLeft.x, pair.left.y - targetLeft.y) > 45) {
+      pair.left = { ...targetLeft };
+    }
+    if (Math.hypot(pair.right.x - targetRight.x, pair.right.y - targetRight.y) > 45) {
+      pair.right = { ...targetRight };
+    }
+
+    ctx.strokeStyle = "#a855f7";
+    ctx.beginPath();
+    ctx.moveTo(seg.x, seg.y);
+    ctx.lineTo(pair.left.x, pair.left.y);
+    ctx.moveTo(seg.x, seg.y);
+    ctx.lineTo(pair.right.x, pair.right.y);
+    ctx.stroke();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(pair.left.x, pair.left.y, 3, 0, Math.PI * 2);
+    ctx.arc(pair.right.x, pair.right.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
+</html>

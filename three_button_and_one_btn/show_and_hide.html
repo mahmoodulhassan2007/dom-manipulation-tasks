@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show/Hide Button Example</title>
+    <style>
+        #toggleContent {
+            display: none;
+            width: 300px;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="toggleButton">Show</button>
+    <div id="toggleContent">
+        <p>Lorem ipsum dolor sit amet consectetur.</p>
+    </div>
+
+    <script>
+        const toggleButton = document.getElementById('toggleButton');
+        const toggleContent = document.getElementById('toggleContent');
+
+        toggleButton.addEventListener('click', () => {
+            if (toggleContent.style.display === 'none' || toggleContent.style.display === '') {
+                toggleContent.style.display = 'block';
+                toggleButton.textContent = 'Hide';
+            } else {
+                toggleContent.style.display = 'none'; 
+                toggleButton.textContent = 'Show';
+            }
+        });
+    </script>
+</body>
+</html>
